@@ -1,0 +1,18 @@
+{
+  "name": "lebonwe-backend",
+  "version": "1.0.0",
+  "description": "Backend API pour lebonwé - High-Tech Abidjan",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node seeder.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.0",
+    "multer": "^2.1.1",
+    "sql.js": "^1.10.0"
+  }
+}

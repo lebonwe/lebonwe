@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lebonwé – High-Tech Abidjan</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#e63946">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="api-url" content="">
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <span><i class="fas fa-map-marker-alt"></i> Abidjan, Côte d'Ivoire</span>
+        <a href="tel:+2250700000000"><i class="fas fa-phone"></i> +225 07 00 000 000</a>
+      </div>
+      <div class="top-bar-right">
+        <a href="#" data-page="home"><i class="fas fa-home"></i> Accueil</a>
+        <a href="https://wa.me/2250700000000" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        <select id="currencySwitcher" onchange="setCurrency(this.value)" style="background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;padding:2px 6px;border-radius:4px;font-size:12px;cursor:pointer">
+          <option value="fcfa">FCFA</option>
+          <option value="eur">€ EUR</option>
+          <option value="usd">$ USD</option>
+        </select>
+        <a href="#" data-page="account"><i class="fas fa-user"></i> <span id="accountLabel">Espace client</span></a>
+      </div>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="container header-inner">
+      <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+      <a href="#" data-page="home" class="logo">
+        <img src="logo.png" alt="lebonwé" class="logo-img">
+      </a>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Rechercher un produit...">
+        <button id="searchBtn"><i class="fas fa-search"></i></button>
+      </div>
+      <div class="header-actions">
+        <a href="#" class="header-action" data-page="checkout"><i class="fas fa-shopping-cart"></i><span>Panier</span><span class="cart-count" id="cartCount">0</span></a>
+      </div>
+    </div>
+  </header>
+
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <button class="nav-cat-btn"><i class="fas fa-bars"></i> Tout</button>
+      <a href="#" data-category="ordinateurs-portables">Ordinateurs Portables</a>
+      <a href="#" data-category="ordinateurs-bureau">Ordinateurs Bureau</a>
+      <a href="#" data-category="telephones">Téléphones</a>
+      <div class="nav-dropdown">
+        <a href="#" class="nav-dropdown-toggle">Consoles <i class="fas fa-chevron-down"></i></a>
+        <div class="nav-dropdown-menu">
+          <a href="#" data-category="consoles">Toutes les consoles</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ PAGE: HOME ============ -->
+  <div id="page-home" class="page">
+
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-card hero-card-dark">
+          <div class="hero-badge">Livraison 24h</div>
+          <div class="hero-badge-sub">Abidjan</div>
+          <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80" alt="Téléphones">
+          <div class="hero-card-content">
+            <h2>Smartphones dès <span class="price" id="minPrice">45 000 F</span></h2>
+            <a href="#" class="btn btn-outline" data-category="telephones">Voir les offres →</a>
+          </div>
+        </div>
+        <div class="hero-card hero-card-accent">
+          <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=600&q=80" alt="Consoles">
+          <div class="hero-card-content">
+            <h2>Consoles PS3 / PS4 / PS6</h2>
+            <a href="#" class="btn btn-outline" data-category="consoles">Découvrir →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="container features-grid">
+      <div class="feature-item">
+        <div class="feature-icon"><img src="images/icons/shield.svg" alt="Certifié" class="icon-svg"></div>
+        <div><strong>Produits certifiés</strong><span>Vérifiés par notre équipe</span></div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><img src="images/icons/delivery.svg" alt="Livraison" class="icon-svg"></div>
+        <div><strong>Livraison 24h</strong><span>Abidjan & Côte d'Ivoire</span></div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><img src="images/icons/money.svg" alt="Paiement" class="icon-svg"></div>
+        <div><strong>Orange / MTN / Wave</strong><span>Paiement mobile money</span></div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><img src="images/icons/return.svg" alt="Retour" class="icon-svg"></div>
+        <div><strong>Retour 7 jours</strong><span>Remboursement garanti</span></div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><img src="images/icons/support.svg" alt="Support" class="icon-svg"></div>
+        <div><strong>Support 7j/7</strong><span>WhatsApp & Téléphone</span></div>
+      </div>
+      </div>
+    </section>
+
+    <section class="flash-sale">
+      <div class="container flash-sale-inner">
+        <div class="flash-sale-info">
+          <h2><i class="fas fa-bolt"></i> Ventes Flash</h2>
+          <p>Offres limitées, ne manquez pas !</p>
+        </div>
+        <div class="flash-timer" id="flashTimer">
+          <div class="timer-unit"><span id="hours">02</span><small>Heures</small></div>
+          <span class="timer-sep">:</span>
+          <div class="timer-unit"><span id="minutes">45</span><small>Minutes</small></div>
+          <span class="timer-sep">:</span>
+          <div class="timer-unit"><span id="seconds">00</span><small>Secondes</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="categories" id="categoriesSection">
+      <div class="container">
+        <div class="section-header">
+          <h2>Nos Catégories</h2>
+        </div>
+        <div class="categories-grid" id="categoriesGrid"></div>
+      </div>
+    </section>
+
+    <section class="products" id="productsSection">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="productsTitle">Tous les produits</h2>
+          <div class="product-tabs" id="productTabs">
+            <button class="tab-btn active" data-filter="all">Tous</button>
+            <button class="tab-btn" data-filter="neuf">Neuf</button>
+            <button class="tab-btn" data-filter="occasion">Occasion</button>
+          </div>
+        </div>
+        <div class="products-grid" id="productsGrid"><p class="loading">Chargement...</p></div>
+      </div>
+    </section>
+
+    <section class="newsletter">
+      <div class="container newsletter-inner">
+        <div class="newsletter-content">
+          <i class="fas fa-envelope-open-text newsletter-icon"></i>
+          <h2>Offres exclusives dans votre boîte mail</h2>
+          <p>Promos, nouveautés, bons plans high-tech ivoirien — chaque semaine.</p>
+          <form class="newsletter-form" id="newsletterForm">
+            <input type="email" id="newsletterEmail" placeholder="Votre adresse email" required>
+            <button type="submit" class="btn btn-primary">S'abonner</button>
+          </form>
+          <p id="newsletterMsg" style="margin-top:12px;font-size:14px"></p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============ PAGE: PRODUCT DETAIL ============ -->
+  <div id="page-product" class="page" style="display:none">
+    <div class="container" style="padding-top:24px">
+      <a href="#" data-page="home" class="back-link"><i class="fas fa-arrow-left"></i> Retour aux produits</a>
+      <div id="productDetailContent" class="product-detail"><p class="loading">Chargement...</p></div>
+    </div>
+  </div>
+
+  <!-- ============ PAGE: CHECKOUT ============ -->
+  <div id="page-checkout" class="page" style="display:none">
+    <div class="container" style="padding-top:24px">
+      <a href="#" data-page="home" class="back-link"><i class="fas fa-arrow-left"></i> Continuer mes achats</a>
+      <h2 style="margin:20px 0">Mon Panier</h2>
+      <div id="checkoutContent" class="checkout-layout">
+        <div class="checkout-items" id="checkoutItems"><p class="loading">Chargement...</p></div>
+        <div class="checkout-summary" id="checkoutSummary"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PAGE: CLIENT ACCOUNT ============ -->
+  <div id="page-account" class="page" style="display:none">
+    <div class="container" style="padding-top:24px">
+      <div id="accountContent"></div>
+    </div>
+  </div>
+
+  <!-- ============ PAGE: ADMIN (PrestaShop style) ============ -->
+  <div id="page-admin" class="page" style="display:none">
+    <div class="admin-wrapper">
+      <aside class="admin-sidebar">
+        <div class="admin-sidebar-header">
+          <img src="logo.png" alt="lebonwé" class="logo-img-sm">
+          <span class="admin-badge">Admin</span>
+        </div>
+        <nav class="admin-sidebar-nav">
+          <a href="#" class="admin-nav-link active" data-admin="dashboard" data-role="all"><i class="fas fa-chart-simple"></i> <span>Dashboard</span></a>
+          <a href="#" class="admin-nav-link" data-admin="products" data-role="super_admin,manager,vendeur"><i class="fas fa-box"></i> <span>Produits</span></a>
+          <a href="#" class="admin-nav-link" data-admin="categories" data-role="super_admin,manager,vendeur"><i class="fas fa-tags"></i> <span>Catégories</span></a>
+          <a href="#" class="admin-nav-link" data-admin="orders" data-role="super_admin,manager,commercial,vendeur"><i class="fas fa-truck"></i> <span>Commandes</span></a>
+          <a href="#" class="admin-nav-link" data-admin="subscribers" data-role="super_admin,manager,commercial"><i class="fas fa-envelope"></i> <span>Abonnés</span></a>
+          <a href="#" class="admin-nav-link" data-admin="customers" data-role="super_admin,manager,commercial"><i class="fas fa-users"></i> <span>Clients</span></a>
+          <a href="#" class="admin-nav-link" data-admin="reports" data-role="super_admin,manager,commercial"><i class="fas fa-chart-line"></i> <span>Rapports</span></a>
+          <a href="#" class="admin-nav-link" data-admin="banners" data-role="super_admin,manager"><i class="fas fa-images"></i> <span>Bannières</span></a>
+          <a href="#" class="admin-nav-link" data-admin="config" data-role="super_admin"><i class="fas fa-cog"></i> <span>Configuration</span></a>
+          <a href="#" class="admin-nav-link" data-admin="promos" data-role="super_admin,manager"><i class="fas fa-percent"></i> <span>Promos</span></a>
+          <a href="#" class="admin-nav-link" data-admin="users" data-role="super_admin"><i class="fas fa-user-shield"></i> <span>Utilisateurs</span></a>
+        </nav>
+        <div class="admin-sidebar-footer">
+          <a href="#" data-page="home" class="admin-nav-link"><i class="fas fa-store"></i> <span>Retour boutique</span></a>
+        </div>
+      </aside>
+      <main class="admin-main">
+        <header class="admin-main-header">
+          <h2 id="adminTitle"><i class="fas fa-chart-simple"></i> Dashboard</h2>
+          <div class="admin-user">
+            <i class="fas fa-user-shield"></i>
+            <span id="adminUserName">Administrateur</span>
+            <span id="adminUserRole" style="font-size:11px;color:#999;font-weight:400"></span>
+            <a href="#" onclick="adminLogout();return false" class="admin-logout" title="Déconnexion"><i class="fas fa-sign-out-alt"></i></a>
+          </div>
+        </header>
+        <div class="admin-content">
+          <div id="admin-dashboard" class="admin-panel"></div>
+          <div id="admin-products" class="admin-panel" style="display:none"></div>
+          <div id="admin-categories" class="admin-panel" style="display:none"></div>
+          <div id="admin-orders" class="admin-panel" style="display:none"></div>
+          <div id="admin-subscribers" class="admin-panel" style="display:none"></div>
+          <div id="admin-customers" class="admin-panel" style="display:none"></div>
+          <div id="admin-reports" class="admin-panel" style="display:none"></div>
+          <div id="admin-banners" class="admin-panel" style="display:none"></div>
+          <div id="admin-config" class="admin-panel" style="display:none"></div>
+          <div id="admin-promos" class="admin-panel" style="display:none"></div>
+          <div id="admin-users" class="admin-panel" style="display:none"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ============ MODALS ============ -->
+  <div id="modalOverlay" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal()"></div>
+  <div id="modalContent" class="modal-content" style="display:none"></div>
+
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <img src="logo.png" alt="lebonwé" class="logo-img-sm">
+      <button id="closeMobileMenu"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="mobile-menu-body" id="mobileMenuBody"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="logo footer-logo">
+          <img src="logo.png" alt="lebonwé" class="logo-img">
+        </div>
+        <p>La référence ivoirienne du high-tech neuf et d'occasion. Ordinateurs, téléphones, PS3, PS4, PS6 — livrés partout en Côte d'Ivoire.</p>
+        <div class="footer-social">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-whatsapp"></i></a>
+          <a href="#"><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Catalogue</h4>
+        <ul id="footerCatalogue"></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Informations</h4>
+        <ul>
+          <li><a href="#">À propos de nous</a></li>
+          <li><a href="#">Comment acheter</a></li>
+          <li><a href="#">Modes de paiement</a></li>
+          <li><a href="#">Politique de retour</a></li>
+          <li><a href="#">Garantie produit</a></li>
+          <li><a href="#">Service réparation</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul class="footer-contact">
+          <li><i class="fas fa-map-marker-alt"></i> Plateau, Avenue Chardy, Abidjan, CI</li>
+          <li><i class="fas fa-phone"></i> +225 07 00 000 000</li>
+          <li><i class="fas fa-phone"></i> +225 07 00 000 001</li>
+          <li><i class="fas fa-envelope"></i> contact@lebonwe.ci</li>
+          <li><i class="far fa-clock"></i> Lun–Sam 8h–20h · Dim 10h–18h</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <span>&copy; 2026 lebonwé. Tous droits réservés. Abidjan, Côte d'Ivoire.</span>
+        <div class="payment-methods">
+          <span>Orange Money</span>
+          <span>MTN Money</span>
+          <span>Wave</span>
+          <span>Visa</span>
+          <span><i class="fas fa-truck"></i> Livraison</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="backToTop" title="Haut de page"><i class="fas fa-arrow-up"></i></div>
+  <script src="script.js"></script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>

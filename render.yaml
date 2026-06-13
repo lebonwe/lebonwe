@@ -1,0 +1,16 @@
+web:
+  plan: free
+  type: web
+  name: lebonwe-api
+  runtime: node
+  buildCommand: cd backend && npm install
+  startCommand: cd backend && node server.js
+  envVars:
+    - key: NODE_VERSION
+      value: 20
+    - key: PORT
+      value: 10000
+    - key: DB_PATH
+      value: ./data/lebonwe.db
+    - key: CORS_ORIGIN
+      value: "*"
