@@ -632,6 +632,14 @@ document.querySelectorAll('.nav-inner > a[data-category]').forEach(a => {
 document.querySelectorAll('.nav-inner > a[data-condition]').forEach(a => {
   a.addEventListener('click', e => { e.preventDefault(); goHomeAndFilter('condition', a.dataset.condition); });
 });
+document.querySelector('.nav-cat-btn')?.addEventListener('click', async function (e) {
+  e.preventDefault(); showPage('home'); currentFilter = 'all';
+  document.getElementById('productsTitle').textContent = 'Tous les produits';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.tab-btn[data-filter="all"]')?.classList.add('active');
+  allProducts = await api('/products');
+  renderProducts(allProducts);
+});
 document.querySelector('.nav-inner > a[data-featured]')?.addEventListener('click', async e => {
   e.preventDefault(); showPage('home');
   allProducts = await api('/products/featured');
