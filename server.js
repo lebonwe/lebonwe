@@ -46,7 +46,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-const frontendPath = path.resolve(__dirname, '..');
+const frontendPath = __dirname;
 app.use(express.static(frontendPath));
 
 app.use((req, res, next) => {

@@ -1,14 +1,9 @@
 node_modules/
-backend/node_modules/
-backend/data/
-backend/backups/
+data/
+backups/
 .env
 *.db
 .DS_Store
-
-backend/.env
 *.csv
 *.png
-backend/node_modules/
-backend/data/
-backend/backups/
+*.log
