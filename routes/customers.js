@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const crypto = require('crypto');
 const { db } = require('../config/db');
+const disposableDomains = new Set(require('disposable-email-domains'));
 
 const router = Router();
 
@@ -29,6 +30,8 @@ router.post('/register', (req, res) => {
   if (!/[a-z]/.test(password)) return res.status(400).json({ error: 'Le mot de passe doit contenir au moins une minuscule' });
   if (!/[0-9]/.test(password)) return res.status(400).json({ error: 'Le mot de passe doit contenir au moins un chiffre' });
   if (!/[^a-zA-Z0-9]/.test(password)) return res.status(400).json({ error: 'Le mot de passe doit contenir au moins un symbole spécial' });
+  const domain = email.split('@')[1];
+  if (domain && disposableDomains.has(domain.toLowerCase())) return res.status(400).json({ error: 'Les emails jetables/temporaires ne sont pas autorisés' });
   const existing = db.prepare('SELECT id FROM customers WHERE email = ?').get(email);
   if (existing) return res.status(409).json({ error: 'Cet email est déjà utilisé' });
   const t = token();
