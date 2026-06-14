@@ -6,4 +6,5 @@ backups/
 .DS_Store
 *.csv
 *.png
+!logo.png
 *.log
