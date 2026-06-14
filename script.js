@@ -772,6 +772,7 @@ function renderAccountLogin(el) {
           <div class="form-group"><label>Email *</label><input type="email" id="regEmail" required placeholder="votre@email.com"></div>
           <div class="form-group"><label>Téléphone</label><input type="tel" id="regPhone" placeholder="+225 XX XX XX XX"></div>
           <div class="form-group"><label>Mot de passe *</label><input type="password" id="regPassword" required minlength="8" placeholder="Min 8 caractères"></div>
+          <div class="form-group"><label>Confirmer mot de passe *</label><input type="password" id="regPasswordConfirm" required minlength="8" placeholder="Répétez le mot de passe"></div>
           <p style="font-size:12px;color:#999;margin:-8px 0 12px">Doit contenir : 1 majuscule, 1 minuscule, 1 chiffre, 1 symbole</p>
           <button type="submit" class="btn btn-primary">Créer mon compte</button>
         </form>
@@ -825,6 +826,8 @@ function renderAccountLogin(el) {
     if (!/[a-z]/.test(pwd)) { msg.className = 'account-msg account-error'; msg.textContent = 'Doit contenir au moins une minuscule'; return; }
     if (!/[0-9]/.test(pwd)) { msg.className = 'account-msg account-error'; msg.textContent = 'Doit contenir au moins un chiffre'; return; }
     if (!/[^a-zA-Z0-9]/.test(pwd)) { msg.className = 'account-msg account-error'; msg.textContent = 'Doit contenir au moins un symbole spécial'; return; }
+    const confirm = document.getElementById('regPasswordConfirm').value;
+    if (pwd !== confirm) { msg.className = 'account-msg account-error'; msg.textContent = 'Les mots de passe ne correspondent pas'; return; }
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inscription...';
     msg.className = 'account-msg';
     try {
