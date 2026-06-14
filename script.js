@@ -650,12 +650,14 @@ document.querySelectorAll('.hero-card .btn').forEach(btn => {
 // TAB CLICKS
 // ============================================================
 document.querySelectorAll('.tab-btn[data-filter]').forEach(btn => {
-  btn.addEventListener('click', function () {
+  btn.addEventListener('click', async function () {
     const f = this.dataset.filter;
     if (f === 'all') {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       this.classList.add('active');
+      currentFilter = 'all';
       document.getElementById('productsTitle').textContent = 'Tous les produits';
+      allProducts = await api('/products');
       renderProducts(allProducts);
     } else { goHomeAndFilter('condition', f); }
   });
