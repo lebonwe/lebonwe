@@ -41,6 +41,7 @@ app.use('/api/newsletter-segments', require('./routes/newsletter-segments'));
 app.use('/api/backup', require('./routes/backup'));
 app.use('/api/notify', require('./routes/notify'));
 app.use('/api/import', require('./routes/import'));
+app.use('/api/auth', require('./routes/auth-google'));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 });
 
 router.put('/', (req, res) => {
-  const allowed = ['site_name', 'contact_email', 'contact_phone', 'address', 'facebook', 'twitter', 'instagram', 'payment_methods', 'delivery_fee', 'currency'];
+  const allowed = ['site_name', 'contact_email', 'contact_phone', 'address', 'facebook', 'twitter', 'instagram', 'payment_methods', 'delivery_fee', 'currency', 'google_client_id'];
   for (const key of allowed) {
     if (req.body[key] !== undefined) {
       db.prepare('INSERT OR REPLACE INTO site_config (config_key, config_value) VALUES (?, ?)').run(key, String(req.body[key]));

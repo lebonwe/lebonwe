@@ -700,6 +700,22 @@ async function apiAuth(path, opts = {}) {
   return api(path, opts);
 }
 
+// ---- Google Auth ----
+window.handleGoogleCredential = async function (response) {
+  try {
+    const res = await api('/auth/google', {
+      method: 'POST', body: JSON.stringify({ credential: response.credential })
+    });
+    setToken(res.token);
+    updateAccountLabel();
+    const el = document.getElementById('accountContent');
+    await renderAccountDashboard(el);
+    showToast('Connecté avec Google !', 'success');
+  } catch (e) {
+    showToast('Erreur Google: ' + e.message, 'error');
+  }
+};
+
 function updateAccountLabel() {
   document.getElementById('accountLabel').textContent = isLoggedIn() ? 'Mon compte' : 'Espace client';
 }
@@ -712,10 +728,21 @@ async function showAccount() {
 }
 
 function renderAccountLogin(el) {
+  let googHtml = '';
+  const gid = localStorage.getItem('googleClientId');
+  if (gid) {
+    googHtml = `
+      <div id="gSignInWrapper" style="margin-bottom:16px;display:flex;justify-content:center">
+        <div id="g_id_onload" data-client_id="${gid}" data-context="signin" data-callback="handleGoogleCredential" data-auto_prompt="false"></div>
+        <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><hr style="flex:1;border:none;border-top:1px solid #e0e0e0"><span style="font-size:12px;color:#999">ou</span><hr style="flex:1;border:none;border-top:1px solid #e0e0e0"></div>`;
+  }
   el.innerHTML = `
     <div class="account-layout">
       <div class="account-card" id="loginCard">
         <h2><i class="fas fa-user"></i> Connexion</h2>
+        ${googHtml}
         <form id="loginForm">
           <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required placeholder="votre@email.com"></div>
           <div class="form-group"><label>Mot de passe</label><input type="password" id="loginPassword" required placeholder="Votre mot de passe"></div>
@@ -726,6 +753,10 @@ function renderAccountLogin(el) {
       </div>
       <div class="account-card" id="registerCard" style="display:none">
         <h2><i class="fas fa-user-plus"></i> Créer un compte</h2>
+        ${gid ? `<div style="margin-bottom:16px;display:flex;justify-content:center">
+          <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signup_with" data-size="large" data-logo_alignment="left"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><hr style="flex:1;border:none;border-top:1px solid #e0e0e0"><span style="font-size:12px;color:#999">ou</span><hr style="flex:1;border:none;border-top:1px solid #e0e0e0"></div>` : ''}
         <form id="registerForm">
           <div class="form-group"><label>Nom complet *</label><input type="text" id="regName" required placeholder="Votre nom"></div>
           <div class="form-group"><label>Email *</label><input type="email" id="regEmail" required placeholder="votre@email.com"></div>
@@ -739,6 +770,9 @@ function renderAccountLogin(el) {
       </div>
     </div>
   `;
+  if (gid && window.google?.accounts?.id) {
+    try { google.accounts.id.initialize({ client_id: gid, callback: window.handleGoogleCredential }); google.accounts.id.renderButton(document.querySelector('.g_id_signin'), { type: 'standard', shape: 'pill', theme: 'outline', text: 'signin_with', size: 'large', logo_alignment: 'left' }); } catch (_) {}
+  }
 
   document.getElementById('showRegister').addEventListener('click', () => {
     document.getElementById('loginCard').style.display = 'none';
@@ -1699,6 +1733,7 @@ async function init() {
     await updateCart();
     await buildMobileMenu();
     updateAccountLabel();
+    try { const cfg = await api('/config'); if (cfg.google_client_id) localStorage.setItem('googleClientId', cfg.google_client_id); } catch (_) {}
     if (!localStorage.getItem('visited')) {
       setTimeout(() => showToast('Bienvenue sur <strong>lebonwé</strong> &#128075;', 'info'), 1500);
       localStorage.setItem('visited', '1');

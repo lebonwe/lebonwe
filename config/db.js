@@ -205,7 +205,8 @@ async function init() {
     ['instagram', '#'],
     ['payment_methods', 'Orange Money,MTN Money,Wave,Visa'],
     ['delivery_fee', '0'],
-    ['currency', 'FCFA']
+    ['currency', 'FCFA'],
+    ['google_client_id', '']
   ];
   for (const [k, v] of defaultConfig) {
     db.run('INSERT OR IGNORE INTO site_config (config_key, config_value) VALUES (?, ?)', [k, v]);
