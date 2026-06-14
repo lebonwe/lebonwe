@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const { init } = require('./config/db');
+const { init, db } = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -58,6 +58,11 @@ app.use((req, res, next) => {
 app.use(errorHandler);
 
 init().then(() => {
+  const count = db.prepare('SELECT COUNT(*) as c FROM products').get().c;
+  if (count === 0) {
+    console.log('Base vide -> auto-seed en cours...');
+    require('./seeder');
+  }
   app.listen(PORT, () => {
     console.log(`Serveur lebonwe demarre sur http://localhost:${PORT}`);
     console.log(`API: http://localhost:${PORT}/api`);

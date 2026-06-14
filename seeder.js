@@ -2,7 +2,7 @@ require('dotenv').config();
 const { init, db } = require('./config/db');
 
 (async () => {
-  await init();
+  if (require.main === module) await init();
 
   const categories = [
     { name: 'Téléphones', slug: 'telephones', icon: 'fa-mobile-alt', color: '#fff3e0' },
@@ -55,5 +55,5 @@ const { init, db } = require('./config/db');
 
   console.log('Base de donnees initialisee avec succes !');
   console.log(`  ${categories.length} categories, ${products.length} produits (dont 20 style Temu/Shein/AliExpress)`);
-  process.exit(0);
+  if (require.main === module) process.exit(0);
 })();
