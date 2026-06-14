@@ -370,7 +370,7 @@ img { max-width: 100%; display: block; }
 }
 
 @media (max-width: 768px) {
-  .top-bar-left span, .top-bar-right a:not(:first-child) { display: none; }
+  .top-bar-left span, .top-bar-right a:not([data-page="account"]):not(:first-child) { display: none; }
   .mobile-menu-btn { display: block; }
   .search-bar { display: none; }
   .header-action span { display: none; }
