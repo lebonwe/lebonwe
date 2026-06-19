@@ -60,7 +60,9 @@ router.post('/initiate', async (req, res) => {
 
     const baseUrl = process.env.RAILWAY_PUBLIC_DOMAIN
       ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
-      : `http://localhost:${process.env.PORT || 5000}`;
+      : process.env.RAILWAY_STATIC_URL
+        ? process.env.RAILWAY_STATIC_URL
+        : `http://localhost:${process.env.PORT || 5000}`;
 
     const items = [];
     if (order.items_str) {
@@ -75,12 +77,6 @@ router.post('/initiate', async (req, res) => {
         total_amount: order.total,
         description: `Commande #${order.id} - ${order.customer_name}`,
         items,
-        store: {
-          name: cfg.site_name || 'lebonwé',
-          tagline: 'High-Tech Abidjan',
-          phone: cfg.contact_phone || '',
-          website_url: baseUrl
-        },
         actions: {
           cancel_url: `${baseUrl}/?paiement=cancel&order_id=${order.id}`,
           return_url: `${baseUrl}/?paiement=success&order_id=${order.id}`,
@@ -90,6 +86,12 @@ router.post('/initiate', async (req, res) => {
           order_id: order.id,
           customer_phone: phone || order.customer_phone
         }
+      },
+      store: {
+        name: cfg.site_name || 'lebonwé',
+        tagline: 'High-Tech Abidjan',
+        phone: cfg.contact_phone || '',
+        website_url: baseUrl
       }
     };
 
