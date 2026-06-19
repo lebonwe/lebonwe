@@ -505,6 +505,8 @@ async function renderCheckout() {
     if (isLoggedInCustomer) {
       try { customerData = await apiAuth('/customers/me'); } catch (_) {}
     }
+    let paydunyaOk = false;
+    try { const cfg = await api('/config'); paydunyaOk = !!(cfg.paydunya_master_key && cfg.paydunya_private_key && cfg.paydunya_token); } catch (_) {}
 
     summaryEl.innerHTML = `
       <h3>Résumé de la commande</h3>
@@ -512,12 +514,14 @@ async function renderCheckout() {
       <div class="summary-row"><span>Livraison</span><span style="color:#2e7d32">Gratuite</span></div>
       <div class="summary-row total"><span>Total</span><span>${fmt(cart.total)} F</span></div>
       <div class="form-group"><label>Mode de paiement</label><select id="paymentMethod" onchange="document.getElementById('paymentPhoneGroup').style.display=this.value==='cash'?'none':'block'">
-        <option value="orange_money">Orange Money</option>
-        <option value="mtn_money">MTN Money</option>
-        <option value="wave">Wave</option>
+        ${paydunyaOk ? `
+          <option value="orange_money">Orange Money</option>
+          <option value="mtn_money">MTN Money</option>
+          <option value="wave">Wave</option>
+        ` : ''}
         <option value="cash">Paiement à la livraison</option>
       </select></div>
-      <div class="form-group" id="paymentPhoneGroup"><label>Téléphone Mobile Money</label><input type="tel" id="paymentPhone" placeholder="+225 XX XX XX XX"></div>
+      <div id="paymentPhoneGroup" class="form-group"${paydunyaOk ? '' : ' style="display:none"'}><label>Téléphone Mobile Money</label><input type="tel" id="paymentPhone" placeholder="+225 XX XX XX XX"></div>
       ${!isLoggedInCustomer ? '<p style="font-size:12px;color:#e63946;margin:8px 0"><i class="fas fa-info-circle"></i> <a href="#" onclick="showAccount();return false" style="color:#e63946;text-decoration:underline">Connectez-vous</a> pour suivre vos commandes.</p>' : ''}
       <form class="checkout-form" id="orderForm">
         <div class="form-group"><label>Nom complet *</label><input type="text" id="orderName" required placeholder="Votre nom" value="${esc(customerData.name || '')}"></div>
