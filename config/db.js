@@ -34,8 +34,9 @@ async function init() {
     customer_phone TEXT NOT NULL, customer_email TEXT, address TEXT,
     city TEXT DEFAULT 'Abidjan', notes TEXT, total INTEGER NOT NULL,
     status TEXT DEFAULT 'pending', payment_method TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    payment_token TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
+  try { db.run(`ALTER TABLE orders ADD COLUMN payment_token TEXT DEFAULT NULL`); } catch (_) {}
   db.run(`CREATE TABLE IF NOT EXISTS order_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT, order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
     product_id INTEGER NOT NULL REFERENCES products(id), quantity INTEGER NOT NULL DEFAULT 1,
@@ -206,7 +207,10 @@ async function init() {
     ['payment_methods', 'Orange Money,MTN Money,Wave,Visa'],
     ['delivery_fee', '0'],
     ['currency', 'FCFA'],
-    ['google_client_id', '']
+    ['google_client_id', ''],
+    ['paydunya_master_key', ''],
+    ['paydunya_private_key', ''],
+    ['paydunya_token', '']
   ];
   for (const [k, v] of defaultConfig) {
     db.run('INSERT OR IGNORE INTO site_config (config_key, config_value) VALUES (?, ?)', [k, v]);

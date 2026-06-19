@@ -533,6 +533,8 @@ async function renderCheckout() {
       e.preventDefault();
       const btn = document.getElementById('orderSubmitBtn');
       btn.disabled = true; btn.textContent = 'Traitement...';
+      const paymentMethod = document.getElementById('paymentMethod').value;
+      const paymentPhone = document.getElementById('paymentPhone')?.value || '';
       const orderPayload = {
         customer_name: document.getElementById('orderName').value,
         customer_phone: document.getElementById('orderPhone').value,
@@ -540,25 +542,29 @@ async function renderCheckout() {
         address: document.getElementById('orderAddress').value || null,
         notes: document.getElementById('orderNotes').value || null,
         items: cart.items.map(i => ({ product_id: i.product_id, quantity: i.quantity, unit_price: i.price })),
-        payment_method: 'mobile_money'
+        payment_method: paymentMethod
       };
       try {
         const order = isLoggedInCustomer
           ? await apiAuth('/customers/orders', { method: 'POST', body: JSON.stringify(orderPayload) })
           : await api('/orders', { method: 'POST', body: JSON.stringify(orderPayload) });
-        await api('/cart', { method: 'DELETE' });
-        updateCart();
-        itemsEl.innerHTML = '';
-        summaryEl.innerHTML = `
-          <div style="text-align:center;padding:20px">
-            <div style="font-size:56px;color:#2e7d32;margin-bottom:12px">✓</div>
-            <h3>Commande confirmée !</h3>
-            <p style="color:#666;margin:12px 0">Numéro: <strong>#${order.id}</strong> · Total: <strong>${fmt(order.total)} F</strong></p>
-            <p style="color:#999;font-size:14px">Vous recevrez une confirmation par téléphone.</p>
-            <button class="btn btn-primary" onclick="showPage('home')" style="margin-top:20px">Retour à l'accueil</button>
-          </div>
-        `;
-        showToast('Commande #' + order.id + ' confirmée !', 'success');
+
+        if (paymentMethod === 'cash') {
+          await api('/cart', { method: 'DELETE' });
+          updateCart();
+          showOrderSuccess(order.id, order.total);
+        } else {
+          btn.textContent = 'Redirection vers PayDunya...';
+          const payRes = await api('/paydunya/initiate', {
+            method: 'POST', body: JSON.stringify({ order_id: order.id, phone: paymentPhone || order.customer_phone })
+          });
+          if (payRes.checkout_url) {
+            sessionStorage.setItem('pendingOrderId', order.id);
+            window.location.href = payRes.checkout_url;
+          } else {
+            throw new Error(payRes.error || 'Erreur d\'initiation du paiement');
+          }
+        }
       } catch (e) {
         btn.disabled = false; btn.textContent = 'Passer la commande';
         showToast('Erreur: ' + e.message, 'error');
@@ -573,6 +579,25 @@ async function renderCheckout() {
 // ============================================================
 // CART UPDATE
 // ============================================================
+function showOrderSuccess(orderId, total) {
+  const itemsEl = document.getElementById('checkoutItems');
+  const summaryEl = document.getElementById('checkoutSummary');
+  if (itemsEl) itemsEl.innerHTML = '';
+  if (summaryEl) {
+    summaryEl.innerHTML = `
+      <div style="text-align:center;padding:20px">
+        <div style="font-size:56px;color:#2e7d32;margin-bottom:12px">✓</div>
+        <h3>Paiement réussi !</h3>
+        <p style="color:#666;margin:12px 0">Commande <strong>#${orderId}</strong>${total != null ? ' · Total: <strong>' + fmt(total) + ' F</strong>' : ''}</p>
+        <p style="color:#999;font-size:14px">Vous recevrez une confirmation par téléphone.</p>
+        <button class="btn btn-primary" onclick="showPage('home')" style="margin-top:20px">Retour à l'accueil</button>
+      </div>
+    `;
+  }
+  showPage('checkout');
+  showToast('Paiement réussi ! Commande #' + orderId, 'success');
+}
+
 async function updateCart() {
   try {
     const cart = await api('/cart');
@@ -1533,6 +1558,13 @@ async function renderAdminConfig() {
         <div class="form-group"><label>Instagram URL</label><input type="url" id="cfg_instagram" value="${esc(cfg.instagram || '')}"></div>
         <div class="form-group"><label>Moyens de paiement (séparés par des virgules)</label><input type="text" id="cfg_payments" value="${esc(cfg.payment_methods || '')}"></div>
         <div class="form-group"><label>Frais de livraison (FCFA)</label><input type="number" id="cfg_delivery_fee" value="${cfg.delivery_fee || 0}"></div>
+        <div class="form-group"><label>Google Client ID</label><input type="text" id="cfg_google_client_id" value="${esc(cfg.google_client_id || '')}" placeholder="Pour connexion Google"></div>
+        <div style="border-top:2px solid #e0e0e0;margin:16px 0;padding-top:12px">
+          <h4 style="margin-bottom:8px">PayDunya (Paiement Mobile Money)</h4>
+          <div class="form-group"><label>Master Key</label><input type="password" id="cfg_paydunya_master_key" value="${esc(cfg.paydunya_master_key || '')}"></div>
+          <div class="form-group"><label>Private Key</label><input type="password" id="cfg_paydunya_private_key" value="${esc(cfg.paydunya_private_key || '')}"></div>
+          <div class="form-group"><label>Token</label><input type="password" id="cfg_paydunya_token" value="${esc(cfg.paydunya_token || '')}"></div>
+        </div>
         <button type="submit" class="btn btn-primary">Enregistrer</button>
       </form>
     `;
@@ -1548,7 +1580,11 @@ async function renderAdminConfig() {
           twitter: document.getElementById('cfg_twitter').value,
           instagram: document.getElementById('cfg_instagram').value,
           payment_methods: document.getElementById('cfg_payments').value,
-          delivery_fee: document.getElementById('cfg_delivery_fee').value
+          delivery_fee: document.getElementById('cfg_delivery_fee').value,
+          google_client_id: document.getElementById('cfg_google_client_id').value,
+          paydunya_master_key: document.getElementById('cfg_paydunya_master_key').value,
+          paydunya_private_key: document.getElementById('cfg_paydunya_private_key').value,
+          paydunya_token: document.getElementById('cfg_paydunya_token').value
         })});
         showToast('Configuration sauvegardée', 'success'); btn.disabled = false; btn.innerHTML = 'Enregistrer';
       } catch (e) { showToast('Erreur: ' + e.message, 'error'); btn.disabled = false; btn.innerHTML = 'Enregistrer'; }
@@ -1752,6 +1788,19 @@ async function init() {
       localStorage.setItem('visited', '1');
     }
   checkAdminAccess();
+  const params = new URLSearchParams(window.location.search);
+  const paiement = params.get('paiement');
+  const oid = params.get('order_id');
+  if (paiement && oid) {
+    history.replaceState(null, '', '/');
+    await api('/cart', { method: 'DELETE' }); updateCart();
+    if (paiement === 'success') {
+      try { const o = await api('/orders/' + oid); showOrderSuccess(oid, o.total); }
+      catch (_) { showOrderSuccess(oid); }
+    } else {
+      showToast('Paiement annulé pour la commande #' + oid, 'warning');
+    }
+  }
   if (window.location.pathname === '/account' || window.location.pathname === '/account/') {
     history.replaceState(null, '', '/');
     showAccount();

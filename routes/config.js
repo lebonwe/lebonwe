@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 });
 
 router.put('/', (req, res) => {
-  const allowed = ['site_name', 'contact_email', 'contact_phone', 'address', 'facebook', 'twitter', 'instagram', 'payment_methods', 'delivery_fee', 'currency', 'google_client_id'];
+  const allowed = ['site_name', 'contact_email', 'contact_phone', 'address', 'facebook', 'twitter', 'instagram', 'payment_methods', 'delivery_fee', 'currency', 'google_client_id', 'paydunya_master_key', 'paydunya_private_key', 'paydunya_token'];
   for (const key of allowed) {
     if (req.body[key] !== undefined) {
       db.prepare('INSERT OR REPLACE INTO site_config (config_key, config_value) VALUES (?, ?)').run(key, String(req.body[key]));

@@ -29,6 +29,7 @@ app.use('/api/wishlist', require('./routes/wishlist'));
 app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/delivery', require('./routes/delivery'));
 app.use('/api/payments', require('./routes/payments'));
+app.use('/api/paydunya', require('./routes/paydunya'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/loyalty', require('./routes/loyalty'));
 app.use('/api/flash-sales', require('./routes/flash-sales'));
