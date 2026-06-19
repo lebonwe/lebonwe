@@ -109,25 +109,27 @@ router.post('/initiate', async (req, res) => {
   }
 });
 
-router.post('/callback', async (req, res) => {
+async function handleCallback(token) {
+  if (!token) return { error: 'token requis' };
+  const result = await apiRequest('/api/v1/checkout-invoice/confirm', { token });
+  const tx = db.prepare('SELECT * FROM payment_transactions WHERE transaction_id = ?').get(token);
+  if (!tx) return { error: 'Transaction introuvable' };
+  if (result.status === 'completed' || result.response_code === '00') {
+    db.prepare('UPDATE payment_transactions SET status = ? WHERE id = ?').run('completed', tx.id);
+    db.prepare('UPDATE orders SET status = ?, payment_method = ? WHERE id = ?').run('confirmed', 'paydunya', tx.order_id);
+  } else {
+    db.prepare('UPDATE payment_transactions SET status = ? WHERE id = ?').run('failed', tx.id);
+  }
+  return { status: 'ok' };
+}
+
+router.all('/callback', async (req, res) => {
   try {
-    const token = req.body?.token || req.query?.token;
+    const token = req.body?.token || req.query?.token || req.body?.data?.token;
     if (!token) return res.status(400).json({ error: 'token requis' });
-
-    const result = await apiRequest('/api/v1/checkout-invoice/confirm', { token });
-
-    const tx = db.prepare('SELECT * FROM payment_transactions WHERE transaction_id = ?').get(token);
-    if (!tx) return res.status(404).json({ error: 'Transaction introuvable' });
-
-    if (result.status === 'completed' || result.response_code === '00') {
-      db.prepare('UPDATE payment_transactions SET status = ? WHERE id = ?').run('completed', tx.id);
-      db.prepare('UPDATE orders SET status = ?, payment_method = ? WHERE id = ?').run('confirmed', 'paydunya', tx.order_id);
-    } else {
-      db.prepare('UPDATE payment_transactions SET status = ? WHERE id = ?').run('failed', tx.id);
-      db.prepare('UPDATE orders SET status = ? WHERE id = ?').run('cancelled', tx.order_id);
-    }
-
-    res.json({ status: 'ok' });
+    const r = await handleCallback(token);
+    if (r.error) return res.status(404).json(r);
+    res.json(r);
   } catch (e) {
     res.status(502).json({ error: 'Erreur callback PayDunya: ' + e.message });
   }
