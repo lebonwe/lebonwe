@@ -1565,9 +1565,9 @@ async function renderAdminConfig() {
         <div class="form-group"><label>Google Client ID</label><input type="text" id="cfg_google_client_id" value="${esc(cfg.google_client_id || '')}" placeholder="Pour connexion Google"></div>
         <div style="border-top:2px solid #e0e0e0;margin:16px 0;padding-top:12px">
           <h4 style="margin-bottom:8px">PayDunya (Paiement Mobile Money)</h4>
-          <div class="form-group"><label>Master Key</label><input type="password" id="cfg_paydunya_master_key" value="${esc(cfg.paydunya_master_key || '')}"></div>
-          <div class="form-group"><label>Private Key</label><input type="password" id="cfg_paydunya_private_key" value="${esc(cfg.paydunya_private_key || '')}"></div>
-          <div class="form-group"><label>Token</label><input type="password" id="cfg_paydunya_token" value="${esc(cfg.paydunya_token || '')}"></div>
+          <div class="form-group"><label>Master Key</label><input type="text" id="cfg_paydunya_master_key" value="${esc(cfg.paydunya_master_key || '')}" style="font-family:monospace"></div>
+          <div class="form-group"><label>Private Key</label><input type="text" id="cfg_paydunya_private_key" value="${esc(cfg.paydunya_private_key || '')}" style="font-family:monospace"></div>
+          <div class="form-group"><label>Token</label><input type="text" id="cfg_paydunya_token" value="${esc(cfg.paydunya_token || '')}" style="font-family:monospace"></div>
         </div>
         <button type="submit" class="btn btn-primary">Enregistrer</button>
       </form>
